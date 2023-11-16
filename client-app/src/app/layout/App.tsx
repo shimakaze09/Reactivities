@@ -33,12 +33,18 @@ function App() {
     setEditMode(false);
   }
 
+  function handleCreateOrEditActivity(activity: Activity) {
+    activity.id ? setActivities([...activities.filter(x => x.id !== activity.id), activity]) : setActivities([...activities, activity]);
+    setEditMode(false);
+    setSelectedActivity(activity);
+  }
+
   return (
     <Fragment>
       <NavBar openForm={handleFormOpen} />
       <Container style={{ marginTop: '7em' }}>
         <ActivityDashboard activities={activities} selectedActivity={selectedActivity} selectActivity={handleSelectActivity}
-          cancelSelectActivity={handleCancelActivity} editMode={editMode} openForm={handleFormOpen} closeForm={handleFormClose} />
+          cancelSelectActivity={handleCancelActivity} editMode={editMode} openForm={handleFormOpen} closeForm={handleFormClose} createOrEdit={handleCreateOrEditActivity} />
       </Container>
     </Fragment>
   );
