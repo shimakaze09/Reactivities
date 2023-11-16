@@ -19,8 +19,8 @@ public class Edit
 
         public Handler(DataContext context, IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)

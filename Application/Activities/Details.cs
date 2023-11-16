@@ -13,16 +13,16 @@ public class Details
 
     public class Handler : IRequestHandler<Query, Activity>
     {
-        private readonly DataContext _dataContext;
+        private readonly DataContext _context;
 
-        public Handler(DataContext dataContext)
+        public Handler(DataContext context)
         {
-            _dataContext = dataContext;
+            _context = context;
         }
 
         public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
         {
-            return await _dataContext.Activities.FindAsync(request.Id);
+            return await _context.Activities.FindAsync(request.Id);
         }
     }
 }
