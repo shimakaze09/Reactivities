@@ -34,13 +34,13 @@ function App() {
   }
 
   return (
-    <>
+    <Fragment>
       <NavBar openForm={handleFormOpen} />
       <Container style={{ marginTop: '7em' }}>
         <ActivityDashboard activities={activities} selectedActivity={selectedActivity} selectActivity={handleSelectActivity}
           cancelSelectActivity={handleCancelActivity} editMode={editMode} openForm={handleFormOpen} closeForm={handleFormClose} />
       </Container>
-    </>
+    </Fragment>
   );
 }
 
