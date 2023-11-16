@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Container, Menu } from 'semantic-ui-react';
+import { Button, Container, Menu } from "semantic-ui-react";
+import React from "react";
 
 interface Props {
     openForm: () => void;
@@ -10,7 +10,7 @@ export default function NavBar({ openForm }: Props) {
         <Menu inverted fixed='top'>
             <Container>
                 <Menu.Item header>
-                    <img src="/assets/logo.png" alt="logo" style={{ marginRight: '10px' }} />
+                    <img src='/assets/logo.png' alt='logo' style={{ marginRight: 10 }} />
                     Reactivities
                 </Menu.Item>
                 <Menu.Item name='Activities' />

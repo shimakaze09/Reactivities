@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import { Button, Form, Segment } from 'semantic-ui-react';
+import { Button, Form, Segment } from "semantic-ui-react";
 import { Activity } from '../../../app/models/activity';
 
 interface Props {
@@ -17,7 +17,7 @@ export default function ActivityForm({ activity: selectedActivity, closeForm, cr
         description: '',
         date: '',
         city: '',
-        venue: '',
+        venue: ''
     }
 
     const [activity, setActivity] = useState(initialState);
@@ -28,7 +28,7 @@ export default function ActivityForm({ activity: selectedActivity, closeForm, cr
 
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const { name, value } = event.target;
-        setActivity({ ...activity, [name]: value });
+        setActivity({ ...activity, [name]: value })
     }
 
     return (
