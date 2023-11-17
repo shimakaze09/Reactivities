@@ -1,11 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../models/activity";
-import { v4 as uuid } from 'uuid';
 import agent from "../api/agent";
+import { v4 as uuid } from 'uuid';
 
 export default class ActivityStore {
     activityRegistry = new Map<string, Activity>();
-    selectedActivity: Activity | undefined = undefined;
+    selectedActivity?: Activity = undefined;
     editMode = false;
     loading = false;
     loadingInitial = false;
@@ -15,7 +15,8 @@ export default class ActivityStore {
     }
 
     get activitiesByDate() {
-        return Array.from(this.activityRegistry.values()).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+        return Array.from(this.activityRegistry.values()).sort((a, b) =>
+            Date.parse(a.date) - Date.parse(b.date))
     }
 
     loadActivities = async () => {
@@ -70,16 +71,14 @@ export default class ActivityStore {
             })
         } catch (error) {
             console.log(error);
-            runInAction(() => {
-                this.loading = false;
-            })
+            runInAction(() => this.loading = false);
         }
     }
 
     updateActivity = async (activity: Activity) => {
         this.loading = true;
         try {
-            await agent.Activities.update(activity);
+            await agent.Activities.update(activity)
             runInAction(() => {
                 this.activityRegistry.set(activity.id, activity);
                 this.selectedActivity = activity;
@@ -88,9 +87,7 @@ export default class ActivityStore {
             })
         } catch (error) {
             console.log(error);
-            runInAction(() => {
-                this.loading = false;
-            })
+            runInAction(() => this.loading = false);
         }
     }
 
@@ -109,7 +106,6 @@ export default class ActivityStore {
             })
         }
     }
-
 
     private getActivity = (id: string) => {
         return this.activityRegistry.get(id);

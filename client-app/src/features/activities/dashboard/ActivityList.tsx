@@ -1,8 +1,8 @@
-import React, { SyntheticEvent, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { SyntheticEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 import { useStore } from '../../../app/stores/store';
-import { observer } from 'mobx-react-lite';
-import { Link } from 'react-router-dom';
 
 export default observer(function ActivityList() {
     const { activityStore } = useStore();
@@ -10,11 +10,10 @@ export default observer(function ActivityList() {
 
     const [target, setTarget] = useState('');
 
-    function handleActivityDelete(e: SyntheticEvent<HTMLButtonElement>, id: string) {
+    function handleDeleteActivity(e: SyntheticEvent<HTMLButtonElement>, id: string) {
         setTarget(e.currentTarget.name);
-        deleteActivity(id);
+        deleteActivity(id)
     }
-
 
     return (
         <Segment>
@@ -33,16 +32,13 @@ export default observer(function ActivityList() {
                                     as={Link}
                                     to={`/activities/${activity.id}`}
                                     floated='right'
-                                    content='View' color='blue'
-                                />
+                                    content='View'
+                                    color='blue' />
                                 <Button
-                                    name={activity.id}
                                     loading={loading && target === activity.id}
-                                    floated='right'
-                                    content='Delete'
+                                    name={activity.id} floated='right' content='Delete'
                                     color='red'
-                                    onClick={(e) => handleActivityDelete(e, activity.id)}
-                                />
+                                    onClick={(e) => handleDeleteActivity(e, activity.id)} />
                                 <Label basic content={activity.category} />
                             </Item.Extra>
                         </Item.Content>
