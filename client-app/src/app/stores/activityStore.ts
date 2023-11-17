@@ -54,6 +54,15 @@ export default class ActivityStore {
         }
     }
 
+    private setActivity = (activity: Activity) => {
+        activity.date = activity.date.split('T')[0];
+        this.activityRegistry.set(activity.id, activity);
+    }
+
+    private getActivity = (id: string) => {
+        return this.activityRegistry.get(id);
+    }
+
     setLoadingInitial = (state: boolean) => {
         this.loadingInitial = state;
     }
@@ -107,12 +116,5 @@ export default class ActivityStore {
         }
     }
 
-    private getActivity = (id: string) => {
-        return this.activityRegistry.get(id);
-    }
 
-    private setActivity = (activity: Activity) => {
-        activity.date = activity.date.split('T')[0];
-        this.activityRegistry.set(activity.id, activity);
-    }
 }
