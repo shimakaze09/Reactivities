@@ -1,9 +1,6 @@
-using System.Net;
 using API.Extensions;
 using API.Middleware;
-using Application.Activities;
 using Domain;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
