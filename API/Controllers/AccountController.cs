@@ -9,22 +9,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-[AllowAnonymous]
 [ApiController]
 [Route("/api/[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
     private readonly TokenService _tokenService;
-
-    public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TokenService tokenService)
+    public AccountController(UserManager<AppUser> userManager, TokenService tokenService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
         _tokenService = tokenService;
+        _userManager = userManager;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
@@ -32,20 +29,31 @@ public class AccountController : ControllerBase
 
         if (user is null) return Unauthorized();
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+        var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
-        if (result.Succeeded) return CreateUserObject(user);
+        if (result)
+        {
+            return CreateUserObject(user);
+        }
 
         return Unauthorized();
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
-        if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
-            return BadRequest("Email already registered");
         if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
-            return BadRequest("Username already exists");
+        {
+            ModelState.AddModelError("username", "Username taken");
+            return ValidationProblem();
+        }
+
+        if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+        {
+            ModelState.AddModelError("email", "Email taken");
+            return ValidationProblem();
+        }
 
         var user = new AppUser
         {
@@ -58,7 +66,7 @@ public class AccountController : ControllerBase
 
         if (result.Succeeded) return CreateUserObject(user);
 
-        return BadRequest("Problem registering user");
+        return BadRequest(result.Errors);
     }
 
     [Authorize]
