@@ -569,4 +569,7 @@ sketch
 .history
 .ionide
 
+### Secrets
+/API/appsettings.json
+
 # End of https://www.toptal.com/developers/gitignore/api/database,csharp,aspnetcore,dotnetcore,react,visualstudiocode
