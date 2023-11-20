@@ -21,7 +21,12 @@ public class List
 
         public async Task<Result<List<Activity>>> Handle(Query request, CancellationToken token)
         {
-            return Result<List<Activity>>.Success(await _context.Activities.ToListAsync());
+            var activities = await _context.Activities
+                .Include(a => a.Attendees)
+                .ThenInclude(u => u.AppUser)
+                .ToListAsync();
+
+            return Result<List<Activity>>.Success(activities);
         }
     }
 }
