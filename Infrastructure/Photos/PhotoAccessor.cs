@@ -21,7 +21,7 @@ public class PhotoAccessor : IPhotoAccessor
         _cloudinary = new Cloudinary(account);
     }
 
-    public async Task<PhotoUploadResult> AppPhoto(IFormFile file)
+    public async Task<PhotoUploadResult> AddPhoto(IFormFile file)
     {
         if (file.Length > 0)
         {
