@@ -18,42 +18,41 @@ public class UpdateAttendance
     {
         private readonly DataContext _context;
         private readonly IUserAccessor _userAccessor;
-
         public Handler(DataContext context, IUserAccessor userAccessor)
         {
-            _context = context;
             _userAccessor = userAccessor;
+            _context = context;
         }
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
             var activity = await _context.Activities
                 .Include(a => a.Attendees).ThenInclude(u => u.AppUser)
-                .FirstOrDefaultAsync(x => x.Id == request.Id);
+                .SingleOrDefaultAsync(x => x.Id == request.Id);
 
-            if (activity is null) return null;
+            if (activity == null) return null;
 
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
 
-            if (user is null) return null;
+            if (user == null) return null;
 
-            var HostUsername = activity.Attendees.FirstOrDefault(x => x.IsHost)?.AppUser?.UserName;
+            var hostUsername = activity.Attendees.FirstOrDefault(x => x.IsHost)?.AppUser.UserName;
 
             var attendance = activity.Attendees.FirstOrDefault(x => x.AppUser.UserName == user.UserName);
 
-            if (attendance is not null && HostUsername == user.UserName)
+            if (attendance != null && hostUsername == user.UserName)
                 activity.IsCancelled = !activity.IsCancelled;
 
-            if (attendance is not null && HostUsername != user.UserName)
+            if (attendance != null && hostUsername != user.UserName)
                 activity.Attendees.Remove(attendance);
 
-            if (attendance is null)
+            if (attendance == null)
             {
                 attendance = new ActivityAttendee
                 {
                     AppUser = user,
                     Activity = activity,
-                    IsHost = false,
+                    IsHost = false
                 };
 
                 activity.Attendees.Add(attendance);
@@ -61,7 +60,7 @@ public class UpdateAttendance
 
             var result = await _context.SaveChangesAsync() > 0;
 
-            return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem updating attendance.");
+            return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem updating attendance");
         }
     }
 }

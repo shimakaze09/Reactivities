@@ -13,12 +13,10 @@ public class ActivitiesController : BaseApiController
         return HandleResult(await Mediator.Send(new List.Query()));
     }
 
-    [HttpGet("{id:Guid}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetActivity(Guid id)
     {
-        var result = await Mediator.Send(new Details.Query { Id = id });
-
-        return HandleResult(result);
+        return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
     }
 
     [HttpPost]
@@ -28,16 +26,16 @@ public class ActivitiesController : BaseApiController
     }
 
     [Authorize(Policy = "IsActivityHost")]
-    [HttpPut("{id:Guid}")]
-    public async Task<IActionResult> EditActivity(Guid id, Activity activity)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Edit(Guid id, Activity activity)
     {
         activity.Id = id;
         return HandleResult(await Mediator.Send(new Edit.Command { Activity = activity }));
     }
 
     [Authorize(Policy = "IsActivityHost")]
-    [HttpDelete("{id:Guid}")]
-    public async Task<IActionResult> DeleteActivity(Guid id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
     }

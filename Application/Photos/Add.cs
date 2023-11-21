@@ -23,9 +23,9 @@ public class Add
 
         public Handler(DataContext context, IPhotoAccessor photoAccessor, IUserAccessor userAccessor)
         {
+            _userAccessor = userAccessor;
             _context = context;
             _photoAccessor = photoAccessor;
-            _userAccessor = userAccessor;
         }
 
         public async Task<Result<Photo>> Handle(Command request, CancellationToken cancellationToken)

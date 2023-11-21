@@ -1,53 +1,54 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Application.Core;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Application.Photos;
-
-public class SetMain
+namespace Application.Photos
 {
-    public class Command : IRequest<Result<Unit>>
+    public class SetMain
     {
-        public string Id { get; set; }
-    }
-
-    public class Handler : IRequestHandler<Command, Result<Unit>>
-    {
-        private readonly DataContext _context;
-        private readonly IUserAccessor _userAccessor;
-        private readonly IPhotoAccessor _photoAccessor;
-
-        public Handler(DataContext context, IUserAccessor userAccessor, IPhotoAccessor photoAccessor)
+        public class Command : IRequest<Result<Unit>>
         {
-            _context = context;
-            _userAccessor = userAccessor;
-            _photoAccessor = photoAccessor;
+            public string Id { get; set; }
         }
 
-        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
-            var user = await _context.Users.Include(p => p.Photos)
-                .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
+            private readonly DataContext _context;
+            private readonly IUserAccessor _userAccessor;
 
-            if (user is null) return null;
+            public Handler(DataContext context, IUserAccessor userAccessor)
+            {
+                _userAccessor = userAccessor;
+                _context = context;
+            }
 
-            var photo = user.Photos.FirstOrDefault(x => x.Id == request.Id);
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            {
+                var user = await _context.Users
+                    .Include(p => p.Photos)
+                    .FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
 
-            if (photo is null) return null;
+                var photo = user.Photos.FirstOrDefault(x => x.Id == request.Id);
 
-            var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
+                if (photo == null) return null;
 
-            if (currentMain is not null) currentMain.IsMain = false;
+                var currentMain = user.Photos.FirstOrDefault(x => x.IsMain);
 
-            photo.IsMain = true;
+                if (currentMain != null) currentMain.IsMain = false;
 
-            var success = await _context.SaveChangesAsync() > 0;
+                photo.IsMain = true;
+                var success = await _context.SaveChangesAsync() > 0;
 
-            if (success) return Result<Unit>.Success(Unit.Value);
+                if (success) return Result<Unit>.Success(Unit.Value);
 
-            return Result<Unit>.Failure("Problem setting main photo");
+                return Result<Unit>.Failure("Problem setting main photo");
+            }
         }
     }
 }

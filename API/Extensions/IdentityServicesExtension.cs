@@ -14,11 +14,11 @@ public static class IdentityServicesExtension
     public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
     {
         services.AddIdentityCore<AppUser>(opt =>
-            {
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<DataContext>();
+        {
+            opt.Password.RequireNonAlphanumeric = false;
+            opt.User.RequireUniqueEmail = true;
+        })
+        .AddEntityFrameworkStores<DataContext>();
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
 
@@ -41,6 +41,7 @@ public static class IdentityServicesExtension
                 policy.Requirements.Add(new IsHostRequirement());
             });
         });
+
         services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
         services.AddScoped<TokenService>();
 

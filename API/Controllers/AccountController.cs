@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
 [ApiController]
-[Route("/api/[controller]")]
+[Route("api/[controller]")]
 public class AccountController : ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;
@@ -28,7 +28,7 @@ public class AccountController : ControllerBase
         var user = await _userManager.Users.Include(p => p.Photos)
             .FirstOrDefaultAsync(x => x.Email == loginDto.Email);
 
-        if (user is null) return Unauthorized();
+        if (user == null) return Unauthorized();
 
         var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
 
@@ -65,7 +65,10 @@ public class AccountController : ControllerBase
 
         var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-        if (result.Succeeded) return CreateUserObject(user);
+        if (result.Succeeded)
+        {
+            return CreateUserObject(user);
+        }
 
         return BadRequest(result.Errors);
     }
@@ -74,7 +77,8 @@ public class AccountController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
-        var user = await _userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
+        var user = await _userManager.Users.Include(p => p.Photos)
+            .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
         return CreateUserObject(user);
     }

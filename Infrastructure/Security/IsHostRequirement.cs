@@ -24,16 +24,17 @@ public class IsHostRequirementHandler : AuthorizationHandler<IsHostRequirement>
     {
         var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if (userId is null) return Task.CompletedTask;
+        if (userId == null) return Task.CompletedTask;
 
-        var activityId = Guid.Parse(_httpContextAccessor.HttpContext?.Request.RouteValues.SingleOrDefault(x => x.Key == "id").Value?.ToString());
+        var activityId = Guid.Parse(_httpContextAccessor.HttpContext?.Request.RouteValues
+            .SingleOrDefault(x => x.Key == "id").Value?.ToString());
 
         var attendee = _dbContext.ActivityAttendees
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.AppUserId == userId && x.ActivityId == activityId)
             .Result;
 
-        if (attendee is null) return Task.CompletedTask;
+        if (attendee == null) return Task.CompletedTask;
 
         if (attendee.IsHost) context.Succeed(requirement);
 

@@ -12,7 +12,7 @@ namespace Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "activityAttendees",
+                name: "ActivityAttendees",
                 columns: table => new
                 {
                     AppUserId = table.Column<string>(type: "TEXT", nullable: false),
@@ -21,15 +21,15 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_activityAttendees", x => new { x.AppUserId, x.ActivityId });
+                    table.PrimaryKey("PK_ActivityAttendees", x => new { x.AppUserId, x.ActivityId });
                     table.ForeignKey(
-                        name: "FK_activityAttendees_Activities_ActivityId",
+                        name: "FK_ActivityAttendees_Activities_ActivityId",
                         column: x => x.ActivityId,
                         principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_activityAttendees_AspNetUsers_AppUserId",
+                        name: "FK_ActivityAttendees_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -37,8 +37,8 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_activityAttendees_ActivityId",
-                table: "activityAttendees",
+                name: "IX_ActivityAttendees_ActivityId",
+                table: "ActivityAttendees",
                 column: "ActivityId");
         }
 
@@ -46,7 +46,7 @@ namespace Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "activityAttendees");
+                name: "ActivityAttendees");
         }
     }
 }
